@@ -1,0 +1,203 @@
+﻿<Window x:Class="HullDesign1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:tool3d="clr-namespace:_3DTools;assembly=3DTools"
+        Title="MainWindow" Loaded="Window_Loaded" ResizeMode="CanResize" Topmost="False" WindowStartupLocation="Manual" WindowState="Normal" WindowStyle="SingleBorderWindow" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:my="clr-namespace:HullDesign1"
+        SizeToContent="WidthAndHeight" >
+    <Window.Resources>
+        <Transform3DGroup x:Key="CameraTransform">
+            <TranslateTransform3D OffsetZ="{Binding ElementName=sliZoom, Path=Value}"/>
+            <RotateTransform3D>
+                <RotateTransform3D.Rotation>
+                    <AxisAngleRotation3D Axis="0,1,0" Angle="{Binding ElementName=sliRotateY, Path=Value, Mode=TwoWay}" />
+                </RotateTransform3D.Rotation>
+            </RotateTransform3D>
+            <RotateTransform3D>
+                <RotateTransform3D.Rotation>
+                    <AxisAngleRotation3D Axis="0,0,1" Angle="{Binding ElementName=sliRotateZ, Path=Value, Mode=TwoWay}" />
+                </RotateTransform3D.Rotation>
+            </RotateTransform3D>
+            <RotateTransform3D>
+                <RotateTransform3D.Rotation>
+                    <AxisAngleRotation3D Axis="1,0,0" Angle="{Binding ElementName=sliRotateX, Path=Value, Mode=TwoWay}" />
+                </RotateTransform3D.Rotation>
+            </RotateTransform3D>            
+        </Transform3DGroup>
+        <Transform3DGroup x:Key="CameraTransformHull3D">
+            <TranslateTransform3D OffsetZ="{Binding ElementName=sliderZoom, Path=Value}"/>
+            <RotateTransform3D>
+                <RotateTransform3D.Rotation>
+                    <AxisAngleRotation3D Axis="0,1,0" Angle="{Binding ElementName=sliderRotateY, Path=Value, Mode=TwoWay}" />
+                </RotateTransform3D.Rotation>
+            </RotateTransform3D>
+            <RotateTransform3D>
+                <RotateTransform3D.Rotation>
+                    <AxisAngleRotation3D Axis="0,0,1" Angle="{Binding ElementName=sliderRotateZ, Path=Value, Mode=TwoWay}" />
+                </RotateTransform3D.Rotation>
+            </RotateTransform3D>
+            <RotateTransform3D>
+                <RotateTransform3D.Rotation>
+                    <AxisAngleRotation3D Axis="1,0,0" Angle="{Binding ElementName=sliderRotateX, Path=Value, Mode=TwoWay}" />
+                </RotateTransform3D.Rotation>
+            </RotateTransform3D>
+        </Transform3DGroup>
+        <PerspectiveCamera x:Key="Camera"
+            Position="0,0,0"
+			LookDirection="0, 0, -1"
+			UpDirection="0, 1, 0"
+			FieldOfView="60"
+            Transform="{DynamicResource CameraTransform}">
+        </PerspectiveCamera>
+        <Style TargetType="Label">
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <CollectionViewSource x:Key="bonjeanViewSource" d:DesignSource="{d:DesignInstance my:Bonjean, CreateList=True}" />
+        <CollectionViewSource x:Key="DataContextTextBoxBowDraft" />
+    </Window.Resources>
+    <Grid >
+           <Menu Name="main1" BorderThickness="2" Height="30" VerticalContentAlignment="Top" VerticalAlignment="Top" HorizontalAlignment="Left" MaxWidth="1000" Width="77">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" IsCheckable="true"/>
+                <MenuItem Header="_Close" IsCheckable="true"/>
+                <MenuItem Header="_Save" IsCheckable="true"/>
+            </MenuItem>
+            <MenuItem Header="View" Click="MenuItem_Click">
+                <MenuItem Header="Body Plan" IsCheckable="true"/>
+            </MenuItem>
+        </Menu>
+        <TabControl HorizontalAlignment="Stretch" Margin="3,21,2.667,2.333" Name="tabControl1" VerticalAlignment="Stretch" SelectionChanged="tabControl1_SelectionChanged_1" TabStripPlacement="Bottom" Grid.ColumnSpan="4">
+            <TabItem Header="General" Name="tabItem1">
+                  <Grid>
+                    <Button Content="DXF MaxSurf-Converter" Height="89" HorizontalAlignment="Left" Margin="25,145,0,0" Name="button2" VerticalAlignment="Top" Width="157" FontWeight="Normal" FontSize="12" Click="button2_Click" />
+                    <Button Content="Button" Height="25" HorizontalAlignment="Left" Margin="17,56,0,0" Name="button3" VerticalAlignment="Top" Width="204" Click="button3_Click" />
+                    <Button Content="DXF Converter New" Height="56" HorizontalAlignment="Left" Margin="25,286,0,0" Name="button7" VerticalAlignment="Top" Width="165" Click="dxfConvert_Click" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Sections" Name="tabItem2">
+                <Grid Height="387" Width="712">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="133*" />
+                        <RowDefinition Height="254*" />
+                    </Grid.RowDefinitions>
+                    <Canvas Height="286" HorizontalAlignment="Left" Margin="297,65,0,0" Name="canvas1" VerticalAlignment="Top" Width="317" Grid.RowSpan="2" />
+                    <Canvas Height="286" HorizontalAlignment="Left" Margin="299,66,0,0" Name="canvas2" VerticalAlignment="Top" Width="317" Grid.RowSpan="2" />
+                    <Canvas Height="286" HorizontalAlignment="Left" Margin="100,350,0,0" Name="canvas3" VerticalAlignment="Top" Width="317" Grid.RowSpan="2" />
+                    <Button Content="Draw Sections" Tag="Draw"  Height="24" HorizontalAlignment="Left" Margin="17,17,0,0" Name="button1" VerticalAlignment="Top" Width="75" Click="button1_Click_1" FontFamily="Tahoma" OpacityMask="DarkGray" />
+                    <Slider Height="246" HorizontalAlignment="Left" Margin="668,48,0,0" Name="slider1" VerticalAlignment="Top" Width="24" Orientation="Vertical" Grid.RowSpan="2" ValueChanged="slider1_ValueChanged" Value="1" Minimum="0" Maximum="10" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Hull3D" Name="tabItem3" BorderBrush="#FF919B9C">
+                <Grid Height="430" Width="738">
+                    <Border BorderBrush="White" BorderThickness="0">
+                        <tool3d:TrackballDecorator>
+                        <Viewport3D Name="myViewport" ClipToBounds="False">
+                            <Viewport3D.Camera>
+                                <PerspectiveCamera  Position="6,2,25"
+                                          LookDirection="-2,-2,-10"
+                                          UpDirection="0,1,0"
+                                          Transform="{StaticResource CameraTransformHull3D}">
+                                </PerspectiveCamera>
+                            </Viewport3D.Camera>
+                            <ModelUIElement3D>
+                                <DirectionalLight Color="White" Direction="-1,-1,-1" />
+                            </ModelUIElement3D>
+                       </Viewport3D>
+                        </tool3d:TrackballDecorator>
+                    </Border>
+                    <Slider Name="sliderZoom" Height="94" Margin="616,0,0,22" VerticalAlignment="Bottom" Orientation="Vertical" Maximum="50" Minimum="-50" Value="0" HorizontalAlignment="Left" Width="25" />
+                    <Slider Name="sliderRotateY" Height="94" Margin="0,0,66,22" Orientation="Vertical" VerticalAlignment="Bottom" Width="25" Maximum="180" Minimum="-180" Value="-5" HorizontalAlignment="Right" />
+                    <Slider Name="sliderRotateZ" Height="94" HorizontalAlignment="Right" Margin="0,0,35,22" Orientation="Vertical" VerticalAlignment="Bottom" Width="25" Maximum="180" Minimum="-180" Value="-5"/>
+                    <Slider Name="sliderRotateX" Height="94" HorizontalAlignment="Right" Margin="0,0,4,22" Orientation="Vertical" VerticalAlignment="Bottom" Width="25" Maximum="180" Minimum="-180" Value="-5" HorizontalContentAlignment="Stretch" />
+                </Grid>    
+            </TabItem>
+            <TabItem Header="ShipHullSurface" Name="tabItem4">
+                <Grid Height="387" Width="712">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="150*" />
+                        <RowDefinition Height="237*" />
+                    </Grid.RowDefinitions>
+                    <Border BorderBrush="White" BorderThickness="0" Grid.RowSpan="2">
+                        <Viewport3D Name="myViewport1" ClipToBounds="False">
+                            <Viewport3D.Camera>
+                                <PerspectiveCamera Position="4,2,35" LookDirection="-2,-2,-10" UpDirection="0,1,0" Transform="{StaticResource CameraTransform}"></PerspectiveCamera>
+                            </Viewport3D.Camera>
+                            <ModelVisual3D>
+                                <ModelVisual3D.Content>
+                                    <Model3DGroup>
+                                        <AmbientLight Color="White" />
+                                    </Model3DGroup>
+                                </ModelVisual3D.Content>
+                            </ModelVisual3D>                                                       
+                            <tool3d:ScreenSpaceLines3D Points="-4,0,0 3,0,0" Color="Red" Transform="{StaticResource CameraTransform}" />
+                            <tool3d:ScreenSpaceLines3D Points="0,-5,0 0,3,0" Color="Green" Transform="{StaticResource CameraTransform}" />
+                            <tool3d:ScreenSpaceLines3D Points="0,0,-10 0,0,3" Color="Blue" Transform="{StaticResource CameraTransform}" />
+                        </Viewport3D> 
+                    </Border>
+                    <Slider Name="sliZoom"    Height="100" Margin="581,123,105,0"   Maximum="50"  Minimum="-50"  Orientation="Vertical" TickPlacement="None" Value="0"  VerticalAlignment="Top" Grid.Row="1" />
+                    <Slider Name="sliRotateY" Height="100" Margin="612,123,76,14" Maximum="180" Minimum="-180" Orientation="Vertical" TickPlacement="None" Value="-5" Grid.Row="1" />
+                    <Slider Name="sliRotateZ" Height="100" Margin="642,123,46,50" Maximum="180"  Minimum="-180"  Orientation="Vertical" TickPlacement="None" Value="-5" Grid.Row="1" />
+                    <Slider Name="sliRotateX" Height="100" Margin="671,123,17,14" Maximum="180"  Minimum="-180"  Orientation="Vertical" TickPlacement="None" Value="-5" Grid.Row="1" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="HullDraft-Norm" Name="tabItem5">
+                <Grid Height="447" Width="758">
+                    <Canvas Height="270" HorizontalAlignment="Stretch" Margin="291,72,65,105" Name="canvasHullDesign" VerticalAlignment="Stretch" Width="401">                         
+                     </Canvas>
+                    <Canvas Height="85" HorizontalAlignment="Stretch" Margin="40,300,0,0" Name="canvas4" VerticalAlignment="Stretch"  Width="400"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Statica-Curves" Name="tabItem6">
+                <Grid Height="447" Width="758">
+                    <Canvas Height="270" HorizontalAlignment="Stretch" Margin="291,72,65,105" Name="canvasHydrostaticCurves" VerticalAlignment="Stretch" Width="401" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Statica-Bonjean" Name="tabItem7">
+                <Grid Height="447" Width="758" Name="BonjeanWindowGrid" DataContext="{StaticResource bonjeanViewSource}">
+                    <Canvas Margin="0,68,71,155" Name="canvasBonjeanCurves" HorizontalAlignment="Right" Width="545" />
+                    <Slider Height="224" HorizontalAlignment="Left" Margin="112,68,0,0" Maximum="10" Minimum="0" Name="slider2" Orientation="Vertical" Value="1" VerticalAlignment="Top" Width="24" ForceCursor="True" ValueChanged="slider_sternDraftChanged" />
+                    <Slider Height="224" HorizontalAlignment="Left" Margin="703,68,0,0" Maximum="10" Minimum="0" Name="sliderDraftBow" Orientation="Vertical" Value="1" VerticalAlignment="Top" Width="24" ValueChanged="slider_bowDraftChanged" />
+                    <TextBox Height="17" HorizontalAlignment="Left" Margin="238,26,0,0" Name="textBoxSternDraft" VerticalAlignment="Top" Width="86" Text="{Binding Mode=OneWay}" IsReadOnly="True" />
+                    <TextBox Height="17" HorizontalAlignment="Right" Margin="0,3,146,0" Name="textBoxDisplacement" VerticalAlignment="Top" Width="84" IsReadOnly="True" />
+                    <TextBox Height="17" HorizontalAlignment="Left" Margin="528,26,0,0" Name="textBoxXc" VerticalAlignment="Top" Width="84" IsReadOnly="True" />
+                    <TextBlock Height="16" HorizontalAlignment="Left" Margin="142,4,0,0" Name="BowDraftTxtBox" Text="Bow Draft" VerticalAlignment="Top" Width="84" />
+                    <TextBlock Height="16" HorizontalAlignment="Left" Margin="142,26,0,0" Name="textBlock2" Text="Stern Draft" VerticalAlignment="Top" Width="84" />
+                    <TextBlock Height="16" HorizontalAlignment="Left" Margin="412,6,0,0" Name="textBlock3" Text="Displacement" VerticalAlignment="Top" Width="84" />
+                    <TextBlock Height="16" HorizontalAlignment="Left" Margin="412,26,0,0" Name="textBlock4" Text="Xc" VerticalAlignment="Top" Width="84" />
+                    <Canvas Height="97" HorizontalAlignment="Left" Margin="142,330,0,0" Name="BonjeanHullSideCanvas" VerticalAlignment="Top" Width="548" />
+                    <Button Content="Update" Height="20" HorizontalAlignment="Left" Margin="4,399,0,0" Name="button4" VerticalAlignment="Top" Width="96" Click="sectionsAreasUpdate_button_Click" />
+                    <ListView Height="367" HorizontalAlignment="Left" Margin="6,26,0,0" Name="listView1" VerticalAlignment="Top" Width="99" ItemsSource="{Binding}" SelectionMode="Multiple" />
+                    <TextBox Height="17" HorizontalAlignment="Left" Margin="238,6,0,0" Name="textBoxBowDraft" VerticalAlignment="Top" Width="86" IsReadOnly="True" />
+                    <TextBlock Height="17" HorizontalAlignment="Left" Margin="7,5,0,0" Name="textBlock1" Text="Sections Areas" VerticalAlignment="Top" Width="98" FontSize="12" FontWeight="Bold" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Statica-Large Angles" Name="tabItem8">
+                <Grid Name="StaticaLargeAnglesGrid">
+                    <Grid Height="229" Width="331" Name="DynamicStabilityGrid1" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                        <Canvas Name="canvasRollingWLs" Grid.Row="0"/>
+                    </Grid>
+                    <Grid Height="216" Width="319" Name="DynamicStabilityGrid3" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0.333,0" >
+                        <Canvas Name="canvasArmsOfStaticStability" Grid.Row="0" Margin="-12,0,0,0"/>
+                    </Grid>
+                    <Grid Height="203" Width="250" Name="DynamicStabilityGrid4" HorizontalAlignment="Right" VerticalAlignment="Bottom" >
+                        <Canvas Name="canvasArmsOfDynamicStability" Grid.Row="0" Margin="-75,0,0,0"/>
+                    </Grid>
+                    <Grid Margin="0,211,397.333,1">
+                        <Grid Height="238" Width="335" x:Name="DynamicStabilityGrid2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,-19,-58.667,0.333">
+                            <GroupBox Header="Rolling Angle" Height="81" HorizontalAlignment="Left" Margin="41,112,0,0" x:Name="groupBox2" VerticalAlignment="Top" Width="151">
+                                <Grid Margin="0,-8,6.667,11.667" >
+                                    <TextBlock  x:Name="textBlockMaxAngle"  Text="Max" Margin="8,17,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="16"  Width="40"  />
+                                    <TextBlock  x:Name="textBlockAngleStep" Text="Step" Margin="8,39,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="16"  Width="40"  />
+                                    <TextBox x:Name="textBoxMaxAngle" Margin="63,15,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="18"  Width="61" />
+                                    <TextBox x:Name="textBoxAngleStep" Margin="63,37,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="18"  Width="61" />
+                               </Grid>
+                            </GroupBox>
+                            <TextBox x:Name="textBoxDraft" TabIndex="0" HorizontalAlignment="Left" Height="17" Margin="89,91,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="47" />
+                            <TextBlock x:Name="textBlockDraft" HorizontalAlignment="Left" Height="15" Margin="49,89,0,0" TextWrapping="Wrap" Text="Draft" VerticalAlignment="Top" Width="55"/>
+                            <Button Content="Update" HorizontalAlignment="Left" Height="21" Margin="49,205,0,0" VerticalAlignment="Top" Width="90" Click="button_staticaLargeAngles_update_button_Click"/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+         </TabControl>
+    </Grid>
+</Window>
