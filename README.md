@@ -7,7 +7,8 @@ To run project:
 - Download it
 - Go to ShipHullDesign\bin\Release
 - Run `HullDesign1.exe`
-- Configuration Dialog will be opened.  
+- Configuration Dialog will be opened
+- Uncheck `Use DataBase` checkbox, if selected
 - Go to: `Data Files->Select Folder`,   
   Select `ShipHullDesign\SAVE_DATA_FILES`
   and press `OK` button. Application will be opened.  
